@@ -1,6 +1,6 @@
-# Spotify Playlist Roast
+# Playlist Roast
 
-> Extract any **public** Spotify playlist into clean JSON, then let an AI judge your taste with a doodle-style page you can screenshot and share. Bilingual EN / 中.
+> Extract any **public** Spotify or NetEase Cloud Music (网易云音乐) playlist into clean JSON, then let an AI judge your taste with a doodle-style page you can screenshot and share. Bilingual EN / 中.
 
 🌐 **Live demo →** [Life Sucks — A Verdict (生活很烂 — 一份裁决)](https://soujiokita98.github.io/spotify-roast-skill/examples/life-sucks/judgment.html)
 
@@ -35,9 +35,21 @@ Once you have the JSON, the fun starts.
 git clone https://github.com/SoujiOkita98/spotify-roast-skill.git
 cd spotify-roast-skill
 pip install requests
+```
 
+### Spotify
+
+```bash
 python3 scripts/extract_spotify_playlist.py \
   'https://open.spotify.com/playlist/0r6ZDp6DoLzGcsEyO5Xfy4' \
+  --format json > my-playlist.json
+```
+
+### NetEase Cloud Music (网易云音乐)
+
+```bash
+python3 scripts/extract_netease_playlist.py \
+  'https://music.163.com/playlist?id=2884035' \
   --format json > my-playlist.json
 ```
 
@@ -91,6 +103,13 @@ This is the core idea: the JSON is **portable music-taste context**. Drop it int
 
 The bearer token is what makes this work without OAuth. It's anonymous, ephemeral, and granted to the embed page for any public playlist Spotify allows in iframes.
 
+### NetEase Cloud Music extraction
+
+1. Parse the playlist ID from the URL (supports short links like `163cn.tv/XXX`).
+2. Call `https://music.163.com/api/v6/playlist/detail` to get playlist metadata and all track IDs.
+3. Fetch track details in batches of 100 via `https://music.163.com/api/song/detail`. The API silently returns 0 results for batches larger than ~300, so batch size must stay small.
+4. No login or API key required — uses public endpoints that the web player itself uses.
+
 ## Limitations
 
 - **Public playlists only.** Private playlists, Liked Songs, and account-specific exports require real Spotify OAuth.
@@ -107,7 +126,8 @@ spotify-roast-skill/
 ├── LICENSE                # MIT
 ├── SKILL.md               # OpenClaw-style skill manifest
 ├── scripts/
-│   └── extract_spotify_playlist.py
+│   ├── extract_spotify_playlist.py
+│   └── extract_netease_playlist.py
 ├── recipes/
 │   └── judgment-page.md   # design + content brief for AI to generate the roast page
 └── examples/

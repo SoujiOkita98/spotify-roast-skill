@@ -1,13 +1,13 @@
 ---
 name: spotify-roast-skill
-description: Extract any public Spotify playlist into JSON, CSV, or text without OAuth — then optionally generate a doodle-style "AI judgment" HTML page (bilingual EN/中, screenshot-friendly, exports to PNG via html2canvas). Use when the user gives an open.spotify.com playlist URL and asks to extract / list / export tracks, judge or roast a playlist, build a shareable verdict page, or feed playlist data to an AI for music-taste analysis.
+description: Extract any public Spotify or NetEase Cloud Music (网易云音乐) playlist into JSON, CSV, or text without OAuth — then optionally generate a doodle-style "AI judgment" HTML page (bilingual EN/中, screenshot-friendly, exports to PNG via html2canvas). Use when the user gives a Spotify or NetEase playlist URL and asks to extract / list / export tracks, judge or roast a playlist, build a shareable verdict page, or feed playlist data to an AI for music-taste analysis.
 ---
 
-# Spotify Playlist Roast
+# Playlist Roast
 
 This skill does two things:
 
-1. **Extract** a public Spotify playlist into JSON / CSV / plain text, with no Spotify OAuth required.
+1. **Extract** a public playlist into JSON / CSV / plain text, with no OAuth required. Supports both **Spotify** and **NetEase Cloud Music (网易云音乐)**.
 2. **Roast** the playlist into a doodle-style HTML page that's screenshot-friendly and exports to PNG.
 
 Both stages are independent — extraction produces a portable JSON the user can use however they want (talk to AI about their music taste, audit duplicates, pick songs for a video, etc.). The roast is one specific recipe on top of it.
@@ -16,7 +16,9 @@ Both stages are independent — extraction produces a portable JSON the user can
 
 ## 1. Extract
 
-Use the bundled script. No installation beyond `requests`.
+Use the bundled scripts. No installation beyond `requests`.
+
+### Spotify
 
 ```bash
 python3 <skill-dir>/scripts/extract_spotify_playlist.py '<spotify-playlist-url-or-id>' --format text
@@ -24,7 +26,17 @@ python3 <skill-dir>/scripts/extract_spotify_playlist.py '<spotify-playlist-url-o
 python3 <skill-dir>/scripts/extract_spotify_playlist.py '<spotify-playlist-url-or-id>' --format csv > playlist.csv
 ```
 
-### Method
+### NetEase Cloud Music (网易云音乐)
+
+```bash
+python3 <skill-dir>/scripts/extract_netease_playlist.py '<netease-playlist-url-or-id>' --format text
+python3 <skill-dir>/scripts/extract_netease_playlist.py '<netease-playlist-url-or-id>' --format json > playlist.json
+python3 <skill-dir>/scripts/extract_netease_playlist.py '<netease-playlist-url-or-id>' --format csv > playlist.csv
+```
+
+Supports short URLs (e.g. `https://163cn.tv/XXX`) and standard URLs (e.g. `https://music.163.com/playlist?id=XXX`).
+
+### Method — Spotify
 
 1. Parse the playlist id from the URL.
 2. Fetch `https://open.spotify.com/embed/playlist/<id>` (the lightweight embed page, not the JS-heavy main playlist page).
@@ -42,13 +54,28 @@ python3 <skill-dir>/scripts/extract_spotify_playlist.py '<spotify-playlist-url-o
 6. Paginate by `offset += 100` until all tracks are fetched.
 7. Respect `429 Retry-After`; do not tight-loop.
 
-### Caveats
+### Method — NetEase Cloud Music
+
+1. Parse the playlist id from the URL (supports short links like `163cn.tv/XXX`).
+2. Call `https://music.163.com/api/v6/playlist/detail?id=<id>&n=100000` to get playlist metadata and all track IDs.
+3. Fetch track details in batches of 100 via `https://music.163.com/api/song/detail?ids=[<id1>,<id2>,...]`.
+4. The API returns 0 results for batches larger than ~300, so batch size must stay at 100.
+5. Rate limit with 0.3s delay between batches.
+
+### Caveats — Spotify
 
 - Works only for **public** playlists that Spotify allows in embeds.
 - The bearer token is a temporary anonymous embed token, not the user's Spotify OAuth token.
 - Private playlists, Liked Songs, and account-specific exports require proper Spotify OAuth.
 - **No audio features** (tempo / energy / valence / danceability) — those require OAuth. Mood matching from name + artist alone is good enough for most use cases.
 - If the API returns 500, simplify the `fields` selector. In testing, `external_urls(spotify)` caused 500; requesting `external_urls` as a map worked.
+
+### Caveats — NetEase Cloud Music
+
+- Works only for **public** playlists. Private playlists require authentication.
+- No login or API key required — uses public endpoints.
+- Track metadata includes: name, artists, album, duration, song URL.
+- Some tracks may be region-locked or removed from the platform; their metadata is still returned when possible.
 
 ### Output guidance
 
@@ -98,3 +125,6 @@ Trigger phrases include:
 - "make a shareable page for my playlist"
 - "give my AI my music taste"
 - "pick songs from my playlist for [video / mood / scene]"
+- "extract this NetEase playlist" / "extract this 网易云歌单"
+- "list songs from 163cn.tv"
+- "导出网易云歌单" / "提取网易云歌单"
