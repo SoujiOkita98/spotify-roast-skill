@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Spotify Playlist Roast</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Extract any public Spotify playlist into JSON, then let AI roast your taste with a doodle-style page. Bilingual EN/中, screenshot-friendly, exports to PNG." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2b2018;
+    --ink-soft: #5a4a3a;
+    --paper: #fef9e7;
+    --y: #fff39c;
+    --p: #ffc8de;
+    --b: #bfe2ff;
+    --hi: #fff176;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Patrick Hand', cursive;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+  .wrap { max-width: 720px; width: 100%; }
+  h1 { font-family: 'Caveat', cursive; font-size: 64px; margin: 0 0 8px; line-height: 1; letter-spacing: -1px; }
+  h1 .pop { color: #c0392b; }
+  .tag { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0 0 28px; }
+  em {
+    font-style: normal;
+    background-image: linear-gradient(var(--hi), var(--hi));
+    background-repeat: no-repeat;
+    background-size: 100% 0.32em;
+    background-position: 0 100%;
+    padding: 0 3px;
+  }
+  .card {
+    background: var(--y);
+    padding: 22px 26px;
+    border-radius: 6px;
+    box-shadow: 4px 8px 0 rgba(0,0,0,.08), 8px 14px 22px rgba(0,0,0,.08);
+    transform: rotate(-1deg);
+    margin: 14px 0;
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .card.b { background: var(--b); transform: rotate(1.2deg); }
+  .card.p { background: var(--p); transform: rotate(-1.5deg); }
+  .card h2 { font-family: 'Caveat', cursive; font-size: 36px; margin: 0 0 8px; }
+  ul.use-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  ul.use-list li { padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,.2); }
+  ul.use-list li:last-child { border-bottom: none; }
+  .ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 24px; justify-content: center; }
+  .cta {
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 26px;
+    box-shadow: 4px 6px 0 rgba(0,0,0,.2);
+    transform: rotate(-1deg);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .cta:hover { transform: rotate(0deg) translate(-1px, -1px); box-shadow: 5px 7px 0 rgba(0,0,0,.25); }
+  .cta.alt { background: #fff39c; color: var(--ink); transform: rotate(1.2deg); border: 2.5px solid var(--ink); }
+  .footer { text-align: center; margin-top: 28px; color: var(--ink-soft); font-family: 'Caveat', cursive; font-size: 22px; }
+  .footer a { color: var(--ink); }
+  code {
+    background: rgba(0,0,0,.06);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>🎧 Spotify Playlist <span class="pop">Roast</span></h1>
+  <p class="tag">Extract any public playlist → JSON. Then let an AI judge your taste.</p>
+
+  <div class="card">
+    <h2>What it does</h2>
+    <p>A lightweight tool to pull every track from a <em>public</em> Spotify playlist into clean JSON — <em>no OAuth, no app registration, no client secret</em>.</p>
+    <p>Then a recipe to turn that JSON into a doodle-style "AI verdict" page that's <em>screenshot-friendly</em>, exports to PNG, and toggles EN / 中.</p>
+  </div>
+
+  <div class="card b">
+    <h2>What you can do with it</h2>
+    <ul class="use-list">
+      <li>🔥 Roast your playlist into a shareable doodle page (see the demo)</li>
+      <li>🤖 Hand the JSON to your AI so it actually knows your music taste</li>
+      <li>🎬 Ask AI to pick songs from your real library for a vlog / mood</li>
+      <li>🔍 Audit duplicates, count languages, see decade distribution</li>
+    </ul>
+  </div>
+
+  <div class="card p">
+    <h2>Try the demo</h2>
+    <p>The "Life sucks" example: a 168-track playlist named after sadness, secretly stuffed with <em>Three Little Birds</em> and <em>What A Wonderful World</em>. The verdict was unkind.</p>
+  </div>
+
+  <div class="ctas">
+    <a class="cta" href="./examples/life-sucks/judgment.html">📸 See the live demo</a>
+    <a class="cta alt" href="https://github.com/SoujiOkita98/spotify-playlist-roast">⭐ View on GitHub</a>
+  </div>
+
+  <div class="footer">
+    made with ♥ &amp; suspicion · MIT licensed · <a href="./README.zh.md">中文 README</a>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# User-generated playlists / exports (keep examples/ tracked)
+/playlist.json
+/playlist.csv
+/*.png
+!/examples/**/playlist.json
+!/examples/**/judgment.html

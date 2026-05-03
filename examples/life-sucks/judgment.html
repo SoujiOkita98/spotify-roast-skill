@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>"Life sucks" — A Verdict</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&family=Kalam:wght@400;700&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --ink: #2b2018;
+    --ink-soft: #5a4a3a;
+    --paper: #fef9e7;
+    --paper-edge: #f1ead0;
+    --y: #fff39c;
+    --p: #ffc8de;
+    --b: #bfe2ff;
+    --g: #cdf2c6;
+    --o: #ffcc94;
+    --l: #d9caff;
+    --r: #ffb3b3;
+    --hi: #fff176;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 4%, rgba(255,200,200,.25) 0 1px, transparent 2px),
+      radial-gradient(circle at 84% 18%, rgba(180,210,255,.25) 0 1px, transparent 2px),
+      radial-gradient(circle at 30% 60%, rgba(180,255,200,.25) 0 1px, transparent 2px),
+      radial-gradient(circle at 75% 88%, rgba(255,220,150,.25) 0 1px, transparent 2px);
+    color: var(--ink);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 19px;
+    line-height: 1.45;
+    padding: 32px 0;
+  }
+  .page {
+    width: 900px;
+    margin: 0 auto;
+    padding: 0 36px;
+    position: relative;
+  }
+
+  h1, h2, h3 { font-family: 'Caveat', cursive; font-weight: 700; margin: 0; line-height: 1; }
+  h1 { font-size: 88px; }
+  h2 { font-size: 54px; }
+  h3 { font-size: 36px; }
+  .scribble { font-family: 'Shadows Into Light', cursive; }
+  .kalam { font-family: 'Kalam', cursive; }
+  em {
+    font-style: normal;
+    /* solid yellow band at the bottom — uses background-size, not gradient stops,
+       because html2canvas parses gradient stops inconsistently across elements. */
+    background-image: linear-gradient(var(--hi), var(--hi));
+    background-repeat: no-repeat;
+    background-size: 100% 0.32em;
+    background-position: 0 100%;
+    padding: 0 3px;
+  }
+  .strike { text-decoration: line-through wavy var(--r); }
+
+  .header {
+    text-align: center;
+    padding: 24px 0 8px;
+    position: relative;
+  }
+  .header .pre {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--ink-soft);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  .header h1 {
+    margin-top: 8px;
+    color: var(--ink);
+    letter-spacing: -2px;
+  }
+  .header h1 .quote { color: #c0392b; font-size: 100px; vertical-align: -8px; }
+  .header .meta {
+    margin-top: 4px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 22px;
+    color: var(--ink-soft);
+  }
+  .stamp {
+    position: absolute;
+    top: 18px; right: 24px;
+    width: 130px; height: 130px;
+    border: 3px solid #c0392b;
+    border-radius: 50%;
+    color: #c0392b;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    text-align: center;
+    transform: rotate(-12deg);
+    padding: 18px 8px;
+    line-height: 1;
+    opacity: .85;
+  }
+  .stamp .top { font-size: 22px; }
+  .stamp .num { font-size: 56px; }
+  .stamp .bot { font-size: 18px; }
+
+  /* card layout */
+  .row { display: flex; gap: 24px; margin: 22px 0; align-items: flex-start; }
+  .col { flex: 1; }
+  .card {
+    background: var(--y);
+    padding: 22px 24px;
+    border-radius: 6px;
+    box-shadow: 2px 4px 0 rgba(0,0,0,.08), 6px 10px 18px rgba(0,0,0,.08);
+    position: relative;
+  }
+  .card.r-1 { transform: rotate(-1.2deg); }
+  .card.r1  { transform: rotate(1.4deg); }
+  .card.r-2 { transform: rotate(-2.5deg); }
+  .card.r2  { transform: rotate(2.2deg); }
+
+  .card.y { background: var(--y); }
+  .card.p { background: var(--p); }
+  .card.b { background: var(--b); }
+  .card.g { background: var(--g); }
+  .card.o { background: var(--o); }
+  .card.l { background: var(--l); }
+  .card.r { background: var(--r); }
+
+  .tape {
+    position: absolute;
+    width: 110px; height: 26px;
+    background: rgba(255, 230, 130, .7);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    top: -12px; left: 30px;
+    transform: rotate(-3deg);
+  }
+  .tape.r { left: auto; right: 30px; transform: rotate(3deg); background: rgba(200, 230, 255, .7); }
+
+  .verdict-card {
+    background: #fff8c6;
+    padding: 28px 30px 30px;
+    border-radius: 6px;
+    border: 2px dashed #b59a3a;
+    transform: rotate(-.7deg);
+    box-shadow: 4px 8px 0 rgba(0,0,0,.06);
+    position: relative;
+  }
+  .verdict-card .label {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--ink-soft);
+  }
+  .verdict-card .verdict {
+    font-family: 'Caveat', cursive;
+    font-size: 58px;
+    line-height: .98;
+    color: var(--ink);
+    margin-top: 4px;
+  }
+  .verdict-card .verdict .pop { color: #c0392b; }
+  .verdict-card .why {
+    margin-top: 12px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 19px;
+  }
+
+  ul.taxo { list-style: none; padding: 0; margin: 8px 0 0; }
+  ul.taxo li { padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,.2); }
+  ul.taxo li:last-child { border-bottom: none; }
+  ul.taxo .name { font-family: 'Caveat', cursive; font-size: 28px; }
+  ul.taxo .desc { font-size: 17px; color: var(--ink-soft); }
+
+  .pickbox h3 { margin-bottom: 6px; }
+  .pickbox .track { font-family: 'Kalam', cursive; font-size: 22px; }
+  .pickbox .artist { font-size: 17px; color: var(--ink-soft); }
+
+  .roast {
+    background: #fff;
+    border: 2px solid var(--ink);
+    padding: 26px 28px;
+    border-radius: 4px;
+    transform: rotate(.8deg);
+    box-shadow: 4px 6px 0 var(--ink);
+    position: relative;
+  }
+  .roast::before {
+    content: "THE ROAST";
+    position: absolute;
+    top: -16px; left: 24px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    color: var(--ink);
+    letter-spacing: 2px;
+  }
+  body.lang-zh .roast::before { content: "锐评"; letter-spacing: 4px; }
+  .roast p { margin: 0 0 10px; font-size: 20px; }
+  .roast p:last-child { margin-bottom: 0; }
+
+  .pairing {
+    display: flex; align-items: center; gap: 12px; margin-top: 8px;
+    font-family: 'Kalam', cursive; font-size: 21px;
+  }
+  .pairing .arrow { font-size: 28px; }
+
+  /* doodle helpers */
+  .doodle { position: absolute; pointer-events: none; }
+
+  .breakdown { padding-top: 12px; }
+  .bar { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-family: 'Kalam', cursive; font-size: 18px; }
+  .bar .lbl { width: 200px; }
+  .bar .track-bar { display: block; flex: 1; height: 22px; background: rgba(0,0,0,.06); border-radius: 12px; position: relative; overflow: hidden; }
+  .bar .track-bar .fill { display: block; height: 100%; border-radius: 12px; }
+  .bar .pct { width: 36px; text-align: right; }
+
+  .footer {
+    margin-top: 36px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    transform: rotate(-1deg);
+  }
+  .footer .heart { color: #c0392b; }
+
+  .star {
+    display: inline-block;
+    color: #f1c40f;
+    font-size: 22px;
+    margin: 0 1px;
+    transform: rotate(-8deg);
+    text-shadow: 1px 1px 0 #b8901a;
+  }
+
+  .arc { width: 100%; height: 130px; }
+
+  .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .pill {
+    background: rgba(255,255,255,.6);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-family: 'Kalam', cursive;
+    font-size: 16px;
+    transform: rotate(-1deg);
+  }
+  .pill:nth-child(2n) { transform: rotate(1.2deg); }
+  .pill:nth-child(3n) { transform: rotate(-2deg); }
+
+  .quote-block {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    line-height: 1.05;
+    color: var(--ink);
+    transform: rotate(-1deg);
+    text-align: center;
+    margin: 6px 0;
+  }
+  .quote-block .small { font-size: 22px; color: var(--ink-soft); display: block; margin-top: 6px; }
+
+  /* bilingual visibility */
+  .lang-zh-only { display: none; }
+  body.lang-zh .lang-en-only { display: none; }
+  body.lang-zh .lang-zh-only { display: revert; }
+
+  /* lang toggle */
+  .lang-toggle {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 9999;
+    display: inline-flex;
+    background: #fff;
+    border: 2.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: 4px 6px 0 var(--ink);
+    transform: rotate(-2deg);
+    font-family: 'Caveat', cursive;
+  }
+  .lang-toggle button {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .lang-toggle button.active {
+    background: #fff39c;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+
+  /* export button */
+  .export-bar {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    font-family: 'Kalam', cursive;
+  }
+  .export-btn {
+    background: #fff39c;
+    border: 2.5px solid var(--ink);
+    border-radius: 6px;
+    padding: 14px 22px;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: 4px 6px 0 var(--ink);
+    transform: rotate(-2deg);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .export-btn:hover { transform: rotate(-1deg) translate(-1px, -1px); box-shadow: 5px 7px 0 var(--ink); }
+  .export-btn:active { transform: rotate(-2deg) translate(2px, 2px); box-shadow: 2px 3px 0 var(--ink); }
+  .export-btn[disabled] { opacity: .7; cursor: progress; }
+  .export-tip {
+    background: #c5e8ff;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 16px;
+    color: var(--ink);
+    transform: rotate(1.2deg);
+    box-shadow: 2px 3px 0 var(--ink);
+    max-width: 240px;
+    text-align: right;
+    display: none;
+  }
+  .export-tip.show { display: block; }
+  @media print { .export-bar { display: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="pre">
+      <span class="lang-en-only">A solemn AI verdict on the playlist titled</span>
+      <span class="lang-zh-only">来自 AI 的一份严肃裁决，关于这份名为</span>
+    </div>
+    <h1><span class="quote">"</span>Life sucks<span class="quote">"</span></h1>
+    <div class="meta">
+      <span class="lang-en-only">by <strong>G</strong> &nbsp;·&nbsp; 168 tracks &nbsp;·&nbsp; ~10½ hours of feelings</span>
+      <span class="lang-zh-only">作者 <strong>G</strong> &nbsp;·&nbsp; 168 首 &nbsp;·&nbsp; 约 10.5 小时的情绪</span>
+    </div>
+    <div class="stamp">
+      <div class="top"><span class="lang-en-only">VERDICT</span><span class="lang-zh-only">评分</span></div>
+      <div class="num">8.4</div>
+      <div class="bot">/ 10</div>
+    </div>
+    <svg class="doodle" style="left: 40px; top: 60px;" width="120" height="80" viewBox="0 0 120 80">
+      <path d="M5,40 C25,10 50,70 70,30 C85,5 110,55 115,25" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <text class="lang-en-only" x="42" y="78" font-family="Caveat" font-size="18" fill="#c0392b">vibes</text>
+      <text class="lang-zh-only" x="42" y="78" font-family="Caveat" font-size="18" fill="#c0392b">氛围</text>
+    </svg>
+  </div>
+
+  <!-- VERDICT CARD -->
+  <div class="verdict-card" style="margin-top: 18px;">
+    <div class="label">
+      <span class="lang-en-only">⌜ THE VIBE ⌝</span>
+      <span class="lang-zh-only">⌜ 整体氛围 ⌝</span>
+    </div>
+    <div class="verdict lang-en-only">
+      <em>Boomer-dad classic-rock canon</em><br/>
+      married a <span class="pop">中文 indie depression block</span>,<br/>
+      had a metal phase, then secretly<br/>
+      believes <span class="pop">life is actually fine.</span>
+    </div>
+    <div class="verdict lang-zh-only">
+      <em>老爹经典摇滚正典</em><br/>
+      娶了 <span class="pop">中文 indie 抑郁专区</span>，<br/>
+      中间还有过金属乐叛逆期，<br/>
+      但心里默默觉得 <span class="pop">生活其实还行。</span>
+    </div>
+    <div class="why lang-en-only">
+      You named the playlist "Life sucks" and then loaded it with
+      <em>Three Little Birds</em>, <em>What A Wonderful World</em>, <em>All You Need Is Love</em>,
+      <em>Mr. Blue Sky</em>, <em>Don't Stop Me Now</em>, <em>Joy to the World</em>, and four — <strong>FOUR</strong> — Bob Marley songs.
+      Your subconscious is filing a complaint. <span class="scribble" style="font-size:24px;">it has a case.</span>
+    </div>
+    <div class="why lang-zh-only">
+      你给歌单起名叫『Life sucks』，然后塞了
+      <em>Three Little Birds</em>、<em>What A Wonderful World</em>、<em>All You Need Is Love</em>、
+      <em>Mr. Blue Sky</em>、<em>Don't Stop Me Now</em>、<em>Joy to the World</em>，外加 — <strong>四首</strong> — 鲍勃·马利。
+      你的潜意识在投诉。<span class="scribble" style="font-size:24px;">它的诉求成立。</span>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN -->
+  <div class="row">
+    <div class="col">
+      <div class="card y r-1">
+        <div class="tape"></div>
+        <h2><span class="lang-en-only">The Spectrum</span><span class="lang-zh-only">光谱图</span></h2>
+        <div class="breakdown">
+          <div class="bar"><span class="lbl"><span class="lang-en-only">60s–70s classic rock</span><span class="lang-zh-only">60–70 年代经典摇滚</span></span><span class="track-bar"><span class="fill" style="width:78%;background:#f7c873;"></span></span><span class="pct">38%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">中文摇滚 + 中文 indie</span><span class="lang-zh-only">中文摇滚 + 中文独立</span></span><span class="track-bar"><span class="fill" style="width:42%;background:#e57373;"></span></span><span class="pct">21%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">80s–90s metal</span><span class="lang-zh-only">80–90 年代金属</span></span><span class="track-bar"><span class="fill" style="width:24%;background:#7986cb;"></span></span><span class="pct">12%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">"life is wonderful" mole agents</span><span class="lang-zh-only">「人生其实挺好」卧底</span></span><span class="track-bar"><span class="fill" style="width:22%;background:#81c784;"></span></span><span class="pct">11%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">Sinatra / standards / oldies</span><span class="lang-zh-only">辛纳屈 / 老歌经典</span></span><span class="track-bar"><span class="fill" style="width:18%;background:#ba68c8;"></span></span><span class="pct">9%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">Reggae denial wing</span><span class="lang-zh-only">雷鬼回避区</span></span><span class="track-bar"><span class="fill" style="width:8%;background:#4db6ac;"></span></span><span class="pct">4%</span></div>
+          <div class="bar"><span class="lbl"><span class="lang-en-only">Random TV/film easter eggs</span><span class="lang-zh-only">影视彩蛋随机抽取</span></span><span class="track-bar"><span class="fill" style="width:10%;background:#ffb74d;"></span></span><span class="pct">5%</span></div>
+        </div>
+        <div class="pillrow">
+          <span class="pill"><span class="lang-en-only">5 languages</span><span class="lang-zh-only">五种语言</span></span>
+          <span class="pill">Beatles ×8</span>
+          <span class="pill">Bob Dylan ×5</span>
+          <span class="pill">Elvis ×6</span>
+          <span class="pill">Queen ×6</span>
+          <span class="pill">Bob Marley ×4</span>
+          <span class="pill"><span class="lang-en-only">No Party For Cao Dong ×14 😳</span><span class="lang-zh-only">草东没有派对 ×14 😳</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAXONOMY -->
+  <div class="row">
+    <div class="col" style="flex: 1.15;">
+      <div class="card p r1">
+        <div class="tape r"></div>
+        <h2><span class="lang-en-only">The Taxonomy</span><span class="lang-zh-only">歌曲分类学</span></h2>
+        <ul class="taxo">
+          <li>
+            <div class="name lang-en-only">📻 The Boomer Dad Canon</div>
+            <div class="name lang-zh-only">📻 老爹经典正典</div>
+            <div class="desc lang-en-only">Beatles, Stones, Queen, Bowie, Pink Floyd, Eagles, Sinatra, Elvis, Dylan. The "I have taste because I have <em>history</em>" wing.</div>
+            <div class="desc lang-zh-only">披头士、滚石、皇后、鲍伊、平克·弗洛伊德、老鹰、辛纳屈、猫王、迪伦。"我有品位是因为我懂 <em>历史</em>"那一派。</div>
+          </li>
+          <li>
+            <div class="name lang-en-only">🌧 The 中文 Sad Indie Spiral</div>
+            <div class="name lang-zh-only">🌧 中文悲伤独立漩涡</div>
+            <div class="desc lang-en-only">万能青年旅店, 草东没有派对 (×14!), 崔健, 王峰, 黑豹, 罗大佑. The actual sad part of "Life sucks". The honest disclosure.</div>
+            <div class="desc lang-zh-only">万能青年旅店、草东没有派对（×14！）、崔健、汪峰、黑豹、罗大佑。「Life sucks」里真正悲伤的部分，唯一诚实的声明。</div>
+          </li>
+          <li>
+            <div class="name lang-en-only">⚡ The Chest-Thump Metal Wing</div>
+            <div class="name lang-zh-only">⚡ 捶胸金属翼</div>
+            <div class="desc lang-en-only">Metallica, Pantera, Megadeth, Korn, Black Sabbath, KISS. For the four minutes a year you decide to be unwell about it.</div>
+            <div class="desc lang-zh-only">金属乐队、潘特拉、麦加帝斯、科恩、黑色安息日、KISS。一年里那四分钟你决定要不爽一下时听的。</div>
+          </li>
+          <li>
+            <div class="name lang-en-only">🌴 The Reggae Denial Cabana</div>
+            <div class="name lang-zh-only">🌴 雷鬼回避小屋</div>
+            <div class="desc lang-en-only">Bob Marley ×4. Don't worry. About a thing.</div>
+            <div class="desc lang-zh-only">鲍勃·马利 ×4。别担心，任何事情都不要。</div>
+          </li>
+          <li>
+            <div class="name lang-en-only">🌞 The "Life Is Wonderful" Mole Squad</div>
+            <div class="name lang-zh-only">🌞 「人生其实挺好」卧底小分队</div>
+            <div class="desc lang-en-only">Three Little Birds, What A Wonderful World, Mr. Blue Sky, Yellow Submarine, Joy To The World, All You Need Is Love. <em>infiltrating from inside.</em></div>
+            <div class="desc lang-zh-only">Three Little Birds、What A Wonderful World、Mr. Blue Sky、Yellow Submarine、Joy To The World、All You Need Is Love。<em>从内部渗透。</em></div>
+          </li>
+          <li>
+            <div class="name lang-en-only">🎬 The Easter Egg Drawer</div>
+            <div class="name lang-zh-only">🎬 影视彩蛋抽屉</div>
+            <div class="desc lang-en-only">Breaking Bad's Negro Y Azul, Better Call Saul, Arcane, Bullet Train, Cars (yes, "Life Is a Highway"). You watch a lot of TV.</div>
+            <div class="desc lang-zh-only">《绝命毒师》的 Negro Y Azul、《风骚律师》、《奥术》、《子弹列车》、《赛车总动员》（是的，「Life Is a Highway」）。你电视看得不少。</div>
+          </li>
+          <li>
+            <div class="name lang-en-only">🚩 Random Curveball Stash</div>
+            <div class="name lang-zh-only">🚩 突然冷门收藏</div>
+            <div class="desc lang-en-only"><em>Die Internationale</em> (German workers' anthem), Gipsy Kings, Ana Tijoux, a Hebrew "Blowing in the Wind". Cosmopolitan or chaotic — court hasn't decided.</div>
+            <div class="desc lang-zh-only"><em>《国际歌》</em>（德语工人版）、Gipsy Kings、Ana Tijoux、希伯来语版《Blowing in the Wind》。是世界主义还是混乱——法庭尚未裁定。</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PICKS -->
+  <div class="row">
+    <div class="col pickbox">
+      <div class="card b r-2">
+        <h3><span class="lang-en-only">most basic pick</span><span class="lang-zh-only">最大众选择</span></h3>
+        <div class="track">Hotel California</div>
+        <div class="artist">Eagles · 1977</div>
+        <div class="kalam lang-en-only" style="margin-top:8px;">Peak "I'm a passenger and the driver has the aux" energy. Forgivable. Barely.</div>
+        <div class="kalam lang-zh-only" style="margin-top:8px;">完美的「我是乘客，司机拿了 aux」能量。可以原谅。勉强。</div>
+      </div>
+    </div>
+    <div class="col pickbox">
+      <div class="card g r2">
+        <h3><span class="lang-en-only">most pretentious</span><span class="lang-zh-only">最装的选择</span></h3>
+        <div class="track">Murder Most Foul</div>
+        <div class="artist">Bob Dylan · 16:54</div>
+        <div class="kalam lang-en-only" style="margin-top:8px;">A 17-minute Dylan poem about JFK. Either you played it through, or you didn't. Both answers are concerning.</div>
+        <div class="kalam lang-zh-only" style="margin-top:8px;">一首 17 分钟、关于肯尼迪的迪伦长诗。要么你听完了，要么你没听。两个答案都让人担心。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col pickbox">
+      <div class="card o r1">
+        <h3><span class="lang-en-only">most chaotic</span><span class="lang-zh-only">最混乱</span></h3>
+        <div class="track">Die Internationale</div>
+        <div class="artist"><span class="lang-en-only">Hannes Wader · German workers' anthem</span><span class="lang-zh-only">汉内斯·瓦德 · 德语工人国际歌</span></div>
+        <div class="kalam lang-en-only" style="margin-top:8px;">Sandwiched between Louis Armstrong and ELO. Incredible filing.</div>
+        <div class="kalam lang-zh-only" style="margin-top:8px;">夹在路易斯·阿姆斯特朗和 ELO 之间。归档技术满分。</div>
+      </div>
+    </div>
+    <div class="col pickbox">
+      <div class="card l r-1">
+        <h3><span class="lang-en-only">funniest pairing</span><span class="lang-zh-only">最好笑搭配</span></h3>
+        <div class="pairing"><span>"Life is a Highway"</span><span class="arrow">→</span><span>"Highway to Hell"</span></div>
+        <div class="kalam lang-en-only" style="margin-top:8px;">Tracks 2 → 3. You did this on purpose. Respect.</div>
+        <div class="kalam lang-zh-only" style="margin-top:8px;">第 2 首 → 第 3 首。你这是故意的。佩服。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENERGY ARC -->
+  <div class="card y r1" style="margin-top: 18px;">
+    <h2 style="margin-bottom:8px;"><span class="lang-en-only">The Emotional Arc</span><span class="lang-zh-only">情绪曲线</span></h2>
+    <svg class="arc" viewBox="0 0 800 130" preserveAspectRatio="none">
+      <path d="M0,80 C40,75 70,60 100,55 C150,45 180,90 220,95 C260,100 290,30 340,18 C400,4 440,110 500,105 C540,102 570,40 620,35 C660,32 690,80 730,55 C760,38 790,52 800,48"
+            stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="100" cy="55" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="60" y="40" font-family="Caveat" font-size="20" fill="#2b2018">Oasis idle ☕</text>
+      <text class="lang-zh-only" x="55" y="40" font-family="Caveat" font-size="20" fill="#2b2018">Oasis 慵懒 ☕</text>
+      <circle cx="220" cy="95" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="170" y="120" font-family="Caveat" font-size="20" fill="#2b2018">AC/DC pivot 🚗</text>
+      <text class="lang-zh-only" x="165" y="120" font-family="Caveat" font-size="20" fill="#2b2018">AC/DC 急转弯 🚗</text>
+      <circle cx="340" cy="18" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="280" y="14" font-family="Caveat" font-size="20" fill="#2b2018">草东 spiral 🌧</text>
+      <text class="lang-zh-only" x="285" y="14" font-family="Caveat" font-size="20" fill="#2b2018">草东漩涡 🌧</text>
+      <circle cx="500" cy="105" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="450" y="125" font-family="Caveat" font-size="20" fill="#2b2018">Metal arc ⚡</text>
+      <text class="lang-zh-only" x="455" y="125" font-family="Caveat" font-size="20" fill="#2b2018">金属弧 ⚡</text>
+      <circle cx="620" cy="35" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="565" y="22" font-family="Caveat" font-size="20" fill="#2b2018">Marley denial 🌴</text>
+      <text class="lang-zh-only" x="570" y="22" font-family="Caveat" font-size="20" fill="#2b2018">马利回避 🌴</text>
+      <circle cx="730" cy="55" r="5" fill="#c0392b"/>
+      <text class="lang-en-only" x="660" y="92" font-family="Caveat" font-size="20" fill="#2b2018">Sinatra/Beatles cooldown 🎙</text>
+      <text class="lang-zh-only" x="650" y="92" font-family="Caveat" font-size="20" fill="#2b2018">辛纳屈/披头士冷却 🎙</text>
+    </svg>
+  </div>
+
+  <!-- ROAST -->
+  <div class="roast" style="margin-top: 22px;">
+    <p class="lang-en-only">Look. The playlist is titled <em>Life sucks</em>. You then put <em>Joy To The World</em>, <em>What A Wonderful World</em>, <em>Three Little Birds</em>, <em>Yellow Submarine</em>, <em>Mr. Blue Sky</em>, <em>Don't Stop Me Now</em>, <em>All You Need Is Love</em>, AND <em>Imagine</em> on it. The thesis statement is unwell. The thesis statement is being undermined by the appendix.</p>
+    <p class="lang-zh-only">你看。歌单叫 <em>Life sucks</em>。然后你往里塞了 <em>Joy To The World</em>、<em>What A Wonderful World</em>、<em>Three Little Birds</em>、<em>Yellow Submarine</em>、<em>Mr. Blue Sky</em>、<em>Don't Stop Me Now</em>、<em>All You Need Is Love</em>，还有 <em>Imagine</em>。论点不太对劲。论点正在被附录推翻。</p>
+
+    <p class="lang-en-only">Your real sadness lives in the 中文 indie block — that 14-track 草东没有派对 monolith and the 万青 one-two of <em>秦皇岛</em> → <em>大石碎胸口</em> is where you're <span class="strike">processing</span> existing. Everything else is either a road-trip alibi or your dad's record collection in a trench coat.</p>
+    <p class="lang-zh-only">你真正的悲伤住在中文 indie 区——那 14 首草东巨石阵，加上万青的连击 <em>秦皇岛</em> → <em>大石碎胸口</em>，才是你 <span class="strike">处理</span> 存在的地方。剩下的要么是公路旅行的借口，要么是你爸的唱片收藏穿了件风衣。</p>
+
+    <p class="lang-en-only">You have two copies of <em>The Importance of Being Idle</em>, two of <em>正义</em> back-to-back, two <em>My Way</em>s, two <em>Fly Me to the Moon</em>s, and two <em>In My Life</em>s. Either you're really committed or you stopped looking. Probably both.</p>
+    <p class="lang-zh-only"><em>The Importance of Being Idle</em> 两份，<em>正义</em> 连续两份，<em>My Way</em> 两份，<em>Fly Me to the Moon</em> 两份，<em>In My Life</em> 两份。要么你是真的爱，要么你不看了。大概率两者都是。</p>
+
+    <p class="lang-en-only"><strong>Final verdict:</strong> a thoughtful, internationally literate, multi-decade road-trip soul-search that is lying in its own title. <em>8.4 / 10.</em> Lose the duplicates and the rating goes up.</p>
+    <p class="lang-zh-only"><strong>最终裁决：</strong>一份用心的、跨国际、多年代的公路寻心之旅——但它的标题在撒谎。<em>8.4 / 10。</em>删掉重复曲目，分数还能再涨。</p>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block lang-en-only" style="margin-top: 26px;">
+    "Life sucks" — but apparently<br/>
+    <span class="pop" style="color:#c0392b;">don't worry, about a thing.</span>
+    <span class="small">— filed by your AI, May 3 2026 ☁︎</span>
+  </div>
+  <div class="quote-block lang-zh-only" style="margin-top: 26px;">
+    "Life sucks" —— 但显然<br/>
+    <span class="pop" style="color:#c0392b;">别担心，任何事情都不要。</span>
+    <span class="small">—— 由你的 AI 归档于 2026 年 5 月 3 日 ☁︎</span>
+  </div>
+
+  <div class="footer">
+    <span class="lang-en-only">made with <span class="heart">♥</span> &amp; suspicion · share me 📸</span>
+    <span class="lang-zh-only">用 <span class="heart">♥</span> 与怀疑制作 · 请分享我 📸</span>
+  </div>
+
+</div>
+
+<div class="lang-toggle" id="lang-toggle">
+  <button class="active" data-lang="en" type="button">EN</button>
+  <button data-lang="zh" type="button">中</button>
+</div>
+
+<div class="export-bar" id="export-bar">
+  <div class="export-tip" id="export-tip">
+    <span class="lang-en-only">saved! check your Downloads folder ✨</span>
+    <span class="lang-zh-only">已保存！去下载文件夹看看 ✨</span>
+  </div>
+  <button class="export-btn" id="export-btn" type="button">
+    <span class="lang-en-only">📸 Save as PNG</span>
+    <span class="lang-zh-only">📸 导出 PNG</span>
+  </button>
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById('export-btn');
+  const tip = document.getElementById('export-tip');
+  const bar = document.getElementById('export-bar');
+  const langToggle = document.getElementById('lang-toggle');
+
+  // language switching
+  langToggle.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      const lang = b.dataset.lang;
+      document.body.classList.toggle('lang-zh', lang === 'zh');
+      document.documentElement.lang = lang;
+      langToggle.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+    });
+  });
+
+  async function exportPNG() {
+    if (typeof html2canvas !== 'function') {
+      alert('Image export library not loaded yet. Try again in a sec.');
+      return;
+    }
+    const isZh = document.body.classList.contains('lang-zh');
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = isZh ? '✏️ 渲染中…' : '✏️ rendering…';
+    bar.style.display = 'none'; // make sure bar isn't captured
+    langToggle.style.display = 'none';
+
+    try {
+      // wait for fonts so the screenshot uses the right typefaces
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+
+      const target = document.querySelector('.page');
+      const rect = target.getBoundingClientRect();
+      const canvas = await html2canvas(target, {
+        backgroundColor: '#fef9e7',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: Math.max(972, rect.width + 72),
+      });
+
+      const playlistTitle = (document.title || 'playlist-verdict').replace(/[^a-z0-9-]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'playlist-verdict';
+      const link = document.createElement('a');
+      link.download = `${playlistTitle}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      bar.style.display = '';
+      langToggle.style.display = '';
+      tip.classList.add('show');
+      setTimeout(() => tip.classList.remove('show'), 3000);
+    } catch (err) {
+      console.error('Export failed:', err);
+      bar.style.display = '';
+      langToggle.style.display = '';
+      alert((isZh ? '导出失败：' : 'Export failed: ') + (err && err.message ? err.message : err));
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }
+  }
+
+  btn.addEventListener('click', exportPNG);
+})();
+</script>
+
+</body>
+</html>
